@@ -10,21 +10,41 @@
 // @include        http*://*77bike.com/
 // ==/UserScript==
 
-var f14 = document.getElementsByClassName('subject_t f14');
+(function() {
+    'use strict';
+    
+    // Your code here...
+})();
 
+
+var f14 = document.getElementsByClassName('subject_t f14');
 if (f14.length > 0) {
   for (var i in f14) {
+
       var item = f14[i];
       if (typeof item != 'object') {
           continue;
       }
-      if (!GM_getValue(item.id)) {
+
+      var value = GM_getValue(item.id);
+      if (!value) {
+        //全部已读标红色
           item.style.color='red';
       }
-  //  console.log(typeof item);
-  //  console.log(item);
+      var replyCount = item.parentElement.nextElementSibling.nextElementSibling.childNodes[0].textContent;
+
+      if (value !== undefined && value < replyCount){
+        //部分已读标棕色
+          item.style.color='brown';
+      }
+      console.log(item.id);
+      console.log(value);
+      console.log(replyCount);
       item.addEventListener('click', function(event) {
-          GM_setValue(this.id, true)
+          var thisReply =this.parentElement.nextElementSibling.nextElementSibling.childNodes[0].textContent;
+          console.log(thisReply);
+          GM_setValue(this.id, thisReply);
       });
   }
+
 }
